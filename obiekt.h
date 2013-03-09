@@ -1,4 +1,5 @@
-#pragma once
+#ifndef OBIEKT_H
+#define OBIEKT_H
 
 #include "wektor.h"
 
@@ -31,3 +32,4 @@ typedef struct sobiekt
   int (*przetnij)(struct sobiekt* _this, przeciecie** p, promien* pr);
   void (*normalna)(struct sobiekt* _this, wektor* normalna, wektor* pozycja);
 } obiekt;
+#endif

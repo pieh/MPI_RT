@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SCENA_H
+#define SCENA_H
 
 #include "obiekt.h"
 
@@ -18,4 +19,4 @@ typedef struct
 
   kamera kam;
 } scena;
-
+#endif
