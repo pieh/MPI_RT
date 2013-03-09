@@ -1,0 +1,1 @@
+mpicc *.h *.c -I/usr/include/libpng -lm /usr/lib/libpng.a /usr/lib/libz.a -oprogram

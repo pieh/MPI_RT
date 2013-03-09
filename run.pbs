@@ -1,0 +1,5 @@
+#PBS -l nodes=2:ppn=4
+#PBS -j oe
+#PBS -o rt.log
+
+mpiexec ~/rt_test/program
