@@ -79,9 +79,23 @@ static kolor podstawowy_kolor(scena* scena, obiekt* rzecz, wektor* pozycja, wekt
   return ret;
 }
 
+static kolor kolor_odbicia(scena* scena, obiekt* rzecz, wektor* pozycja, wektor* normalna, wektor* kierunekOdbicia, int numer_odbicia)
+{
+  kolor k = {0,0,0,0};
+  promien p;
+
+  p.poczatek = pozycja;
+  p.kierunek = kierunekOdbicia;
+
+  k = sledz(scena, &p, numer_odbicia + 1);
+  //;rzecz->pow->reflect
+  wektor_iloczyn_float(&k, &k, rzecz->pow->reflect);
+  return k;
+}
+
 static kolor cieniuj(scena* scena, przeciecie *przeciecie, int numer_odbicia)
 {
-  kolor ret, podstawowy;
+  kolor ret, pomocniczy;
   wektor pozycja, normalna, odbicie;
 
   wektor* d = przeciecie->wiazka.kierunek;
@@ -94,19 +108,22 @@ static kolor cieniuj(scena* scena, przeciecie *przeciecie, int numer_odbicia)
   wektor_iloczyn_wektorowy(&odbicie, &odbicie, &normalna);
   wektor_roznica(&odbicie, d, &odbicie);
 
+  // standardowe oswietlenie
   wektor_ustaw(&ret, 0, 0, 0);
-  podstawowy = podstawowy_kolor(scena, przeciecie->rzecz, &pozycja, &normalna, &odbicie);
-  wektor_suma(&ret, &ret, &podstawowy);
+  pomocniczy = podstawowy_kolor(scena, przeciecie->rzecz, &pozycja, &normalna, &odbicie);
+  wektor_suma(&ret, &ret, &pomocniczy);
+
+  // odbicia
   if (numer_odbicia >= 5)
-  {
-    kolor pol = {.5, .5, .5};
-    wektor_suma(&ret, &ret, &pol);
-  }
+    wektor_ustaw(&pomocniczy, .5, .5, .5);
+  else
+    pomocniczy = kolor_odbicia(scena, przeciecie->rzecz, &pozycja, &normalna, &odbicie, numer_odbicia);
+  wektor_suma(&ret, &ret, &pomocniczy);
 
   return ret;
 }
 
-static kolor sledz(scena* scena, promien* promien, int numer_odbicia)
+kolor sledz(scena* scena, promien* promien, int numer_odbicia)
 {
   przeciecie *przeciecia;
   int ileprzeciec;
