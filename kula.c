@@ -1,5 +1,8 @@
 #include "kula.h"
 
+#include <stdlib.h>
+#include <math.h>
+
 static int kula_przetnij(obiekt* _this, przeciecie** p, promien* pr)
 {
   opiskola* dane = (opiskola*)_this->dane;

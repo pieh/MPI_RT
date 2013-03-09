@@ -2,8 +2,6 @@
 #define KULA_H
 
 #include "obiekt.h"
-#include <stdlib.h>
-#include <math.h>
 
 typedef struct
 {

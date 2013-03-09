@@ -1,5 +1,8 @@
 #include "zapiszpng.h"
 
+#include <png.h>
+#include <stdio.h>
+
 int zapisz_png_do_pliku (const char* sciezka, kolor* kolory, size_t w, size_t h)
 {
   FILE * fp;

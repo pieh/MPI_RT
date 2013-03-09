@@ -1,10 +1,6 @@
 #ifndef WEKTOR_H
 #define WEKTOR_H
 
-#include <math.h>
-#include <float.h>
-#include <stdlib.h>
-
 // 4 floaty, zeby korzystec z SSE pozniej?
 typedef struct
 {

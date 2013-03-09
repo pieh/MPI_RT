@@ -1,5 +1,9 @@
 #include "wektor.h"
 
+#include <float.h>
+#include <stdlib.h>
+#include <math.h>
+
 void wektor_ustaw(wektor* nowy, float _x, float _y, float _z)
 {
   nowy->x = _x;

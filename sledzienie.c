@@ -1,4 +1,6 @@
 #include "sledzenie.h"
+#include <stdlib.h>
+#include <math.h>
 
 static int przetnij(scena* scena, promien* promien, przeciecie** przeciecia)
 {
