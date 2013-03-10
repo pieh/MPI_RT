@@ -82,15 +82,18 @@ static kolor podstawowy_kolor(scena* scena, obiekt* rzecz, wektor* pozycja, wekt
 static kolor kolor_odbicia(scena* scena, obiekt* rzecz, wektor* pozycja, wektor* normalna, wektor* kierunekOdbicia, int numer_odbicia)
 {
   kolor k = {0,0,0,0};
-  promien p;
+  if (rzecz->pow->reflect == 0.0f)
+    return k;
+  else
+  {
+    promien p;
+    p.poczatek = pozycja;
+    p.kierunek = kierunekOdbicia;
 
-  p.poczatek = pozycja;
-  p.kierunek = kierunekOdbicia;
-
-  k = sledz(scena, &p, numer_odbicia + 1);
-  //;rzecz->pow->reflect
-  wektor_iloczyn_float(&k, &k, rzecz->pow->reflect);
-  return k;
+    k = sledz(scena, &p, numer_odbicia + 1);
+    wektor_iloczyn_float(&k, &k, rzecz->pow->reflect);
+    return k;
+  }
 }
 
 static kolor cieniuj(scena* scena, przeciecie *przeciecie, int numer_odbicia)
