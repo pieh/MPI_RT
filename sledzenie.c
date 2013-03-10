@@ -53,29 +53,26 @@ static kolor podstawowy_kolor(scena* scena, obiekt* rzecz, wektor* pozycja, wekt
     if (niejestwcieniu)
     {
       float illum, spec;
-      kolor lcolor, scolor;
       wektor tmp;
 
       illum = wektor_iloczyn_skalarny(&livec, normalna);
       if (illum > 0)
+      {
+        kolor lcolor;
         wektor_iloczyn_float(&lcolor, &s->kolor, illum);
-      else
-        wektor_ustaw(&lcolor, 0, 0, 0);
-
-      wektor_iloczyn_osobny(&lcolor, &lcolor, &rzecz->pow->diffuse);
+        wektor_iloczyn_osobny(&lcolor, &lcolor, &rzecz->pow->diffuse);
+        wektor_suma(&ret, &ret, &lcolor);
+      }
 
       wektor_normalny(&tmp, kierunekOdbicia);
       spec = wektor_iloczyn_skalarny(&livec, &tmp);
-      
       if (spec > 0)
+      {
+        kolor scolor;
         wektor_iloczyn_float(&scolor, &s->kolor, powf(spec, rzecz->pow->roughness));
-      else
-        wektor_ustaw(&scolor, 0, 0, 0);
-
-      wektor_iloczyn_osobny(&scolor, &scolor, &rzecz->pow->specular);
-
-      wektor_suma(&ret, &ret, &lcolor);
-      wektor_suma(&ret, &ret, &scolor);
+        wektor_iloczyn_osobny(&scolor, &scolor, &rzecz->pow->specular);
+        wektor_suma(&ret, &ret, &scolor);
+      }
     }
   }
 
