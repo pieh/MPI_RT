@@ -45,7 +45,7 @@ int main(int argc, char** argv)
   moja_scena.tablica_obiektow = (obiekt*)malloc(moja_scena.ile_obiektow * sizeof(*moja_scena.tablica_obiektow));
 
   kula_ustaw(&moja_scena.tablica_obiektow[0], &srodek1, 1, &pow);
-  kula_ustaw(&moja_scena.tablica_obiektow[1], &srodek2, 1, &pow);
+  kula_ustaw(&moja_scena.tablica_obiektow[1], &srodek2, .5f, &pow);
 
   moja_scena.ile_swiatel = 4;
   moja_scena.tablica_swiatel = (swiatlo*)malloc(moja_scena.ile_swiatel * sizeof(*moja_scena.tablica_swiatel));
