@@ -21,35 +21,25 @@ static int przetnij(scena* scena, promien* promien, przeciecie** przeciecia)
   return najblizsze != NULL;
 }
 
-static float testuj(scena* scena, promien* promien)
-{
-  przeciecie *przeciecia;
-  if (przetnij(scena, promien, &przeciecia)) // > 0 
-    return przeciecia->odleglosc;
-  else
-   return FLT_MAX;
-}
-
 static kolor podstawowy_kolor(scena* scena, obiekt* rzecz, wektor* pozycja, wektor* normalna, wektor* kierunekOdbicia)
 {
   kolor ret = {0, 0, 0};
   wektor ldis, livec;
   promien pr;
-  float najblizszePrzeciecie;
   int niejestwcieniu;
   int i;
 
   for (i = 0 ; i < scena->ile_swiatel ; i++)
   {
+    przeciecie* p;
     swiatlo* s = &scena->tablica_swiatel[i];
     wektor_roznica(&ldis, &s->pozycja, pozycja);
     wektor_normalny(&livec, &ldis);
     
     pr.poczatek = pozycja;
     pr.kierunek = &livec;
-    najblizszePrzeciecie = testuj(scena, &pr);
 
-    niejestwcieniu = (najblizszePrzeciecie > sqrtf(wektor_iloczyn_skalarny(&ldis, &ldis)));
+    niejestwcieniu = (przetnij(scena, &pr, &p) == 0 || p->odleglosc > sqrtf(wektor_iloczyn_skalarny(&ldis, &ldis)));
     if (niejestwcieniu)
     {
       float illum, spec;
