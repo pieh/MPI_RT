@@ -1,6 +1,7 @@
 #include "sledzenie.h"
 #include <stdlib.h>
 #include <math.h>
+#include <float.h>
 
 static int przetnij(scena* scena, promien* promien, przeciecie** przeciecia)
 {
@@ -26,7 +27,7 @@ static float testuj(scena* scena, promien* promien)
   if (przetnij(scena, promien, &przeciecia)) // > 0 
     return przeciecia->odleglosc;
   else
-   return 0;
+   return FLT_MAX;
 }
 
 static kolor podstawowy_kolor(scena* scena, obiekt* rzecz, wektor* pozycja, wektor* normalna, wektor* kierunekOdbicia)
@@ -48,7 +49,7 @@ static kolor podstawowy_kolor(scena* scena, obiekt* rzecz, wektor* pozycja, wekt
     pr.kierunek = &livec;
     najblizszePrzeciecie = testuj(scena, &pr);
 
-    niejestwcieniu = (najblizszePrzeciecie > sqrtf(wektor_iloczyn_skalarny(&ldis, &ldis))) || (najblizszePrzeciecie == 0.0f);
+    niejestwcieniu = (najblizszePrzeciecie > sqrtf(wektor_iloczyn_skalarny(&ldis, &ldis)));
     if (niejestwcieniu)
     {
       float illum, spec;
