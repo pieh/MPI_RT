@@ -1,5 +1,5 @@
 #ifndef ZAPISZPNG_H
-#define ZAPSIZPNG_H
+#define ZAPISZPNG_H
 
 #include "wektor.h"
 #include <stdint.h>
