@@ -52,7 +52,7 @@ float wektor_iloczyn_skalarny(wektor* v1, wektor* v2)
 void wektor_normalny(wektor* normalny, wektor* v1)
 {
   float l = sqrtf(wektor_iloczyn_skalarny(v1,v1));
-  wektor_iloczyn_float(normalny, v1, 1.0f / (l != 0.0f ? l : FLT_MAX));
+  wektor_iloczyn_float(normalny, v1, ((l != 0.0f) ? 1.0f / l : FLT_MAX));
 }
 
 void wektor_iloczyn_wektorowy(wektor* iloczyn, wektor* v1, wektor* v2)
