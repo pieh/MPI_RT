@@ -21,6 +21,7 @@ int main(int argc, char** argv)
   kolor* bufor;
   wektor srodek1 = {0, 1, 0, 0};
   wektor srodek2 = {-1, .5, 1.5, 0};
+  wektor srodek3 = {.4, .3, 1.5, 0};
   wektor poz = {3,2,4,0}, na = {-1,.5,0,0};
   kolor diff = {1,1,1};
   kolor spec = {.5, .5, .5};
@@ -40,11 +41,12 @@ int main(int argc, char** argv)
   pow.reflect = .6f;
   pow.roughness = 50;
 
-  moja_scena.ile_obiektow = 2;
+  moja_scena.ile_obiektow = 3;
   moja_scena.tablica_obiektow = (obiekt*)malloc(moja_scena.ile_obiektow * sizeof(*moja_scena.tablica_obiektow));
 
   kula_ustaw(&moja_scena.tablica_obiektow[0], &srodek1, 1, &pow);
   kula_ustaw(&moja_scena.tablica_obiektow[1], &srodek2, .5f, &pow);
+  kula_ustaw(&moja_scena.tablica_obiektow[2], &srodek3, .7f, &pow);
 
   moja_scena.ile_swiatel = 4;
   moja_scena.tablica_swiatel = (swiatlo*)malloc(moja_scena.ile_swiatel * sizeof(*moja_scena.tablica_swiatel));
