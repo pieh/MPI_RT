@@ -111,17 +111,18 @@ static kolor cieniuj(scena* scena, przeciecie *przeciecie, int numer_odbicia)
   wektor_iloczyn_wektorowy(&odbicie, &odbicie, &normalna);
   wektor_roznica(&odbicie, d, &odbicie);
 
-  // standardowe oswietlenie
   wektor_ustaw(&ret, 0, 0, 0);
+
+  // standardowe oswietlenie
   pomocniczy = podstawowy_kolor(scena, przeciecie->rzecz, &pozycja, &normalna, &odbicie);
   wektor_suma(&ret, &ret, &pomocniczy);
 
   // odbicia
-  if (numer_odbicia >= 5)
-    wektor_ustaw(&pomocniczy, .5, .5, .5);
-  else
+  if (numer_odbicia < 5)
+  {
     pomocniczy = kolor_odbicia(scena, przeciecie->rzecz, &pozycja, &normalna, &odbicie, numer_odbicia);
-  wektor_suma(&ret, &ret, &pomocniczy);
+    wektor_suma(&ret, &ret, &pomocniczy);
+  }
 
   return ret;
 }
