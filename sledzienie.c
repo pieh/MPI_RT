@@ -24,7 +24,7 @@ static float testuj(scena* scena, promien* promien)
   if (przetnij(scena, promien, &przeciecia)) // > 0 
     return przeciecia->odleglosc;
   else
-   return 0;
+   return FLT_MAX;
 }
 
 static kolor podstawowy_kolor(scena* scena, obiekt* rzecz, wektor* pozycja, wektor* normalna, wektor* kierunekOdbicia)
@@ -46,7 +46,7 @@ static kolor podstawowy_kolor(scena* scena, obiekt* rzecz, wektor* pozycja, wekt
     pr.kierunek = &livec;
     najblizszePrzeciecie = testuj(scena, &pr);
 
-    niejestwcieniu = (najblizszePrzeciecie > sqrtf(wektor_iloczyn_skalarny(&ldis, &ldis))) || (najblizszePrzeciecie == 0.0f);
+    niejestwcieniu = (najblizszePrzeciecie > sqrtf(wektor_iloczyn_skalarny(&ldis, &ldis)));// || (najblizszePrzeciecie > -0.0001f && najblizszePrzeciecie < 0.0001f);
     if (niejestwcieniu)
     {
       float illum, spec;
@@ -55,24 +55,21 @@ static kolor podstawowy_kolor(scena* scena, obiekt* rzecz, wektor* pozycja, wekt
 
       illum = wektor_iloczyn_skalarny(&livec, normalna);
       if (illum > 0)
+      {
         wektor_iloczyn_float(&lcolor, &s->kolor, illum);
-      else
-        wektor_ustaw(&lcolor, 0, 0, 0);
-
-      wektor_iloczyn_osobny(&lcolor, &lcolor, &rzecz->pow->diffuse);
+        wektor_iloczyn_osobny(&lcolor, &lcolor, &rzecz->pow->diffuse);
+        wektor_suma(&ret, &ret, &lcolor);
+      }
 
       wektor_normalny(&tmp, kierunekOdbicia);
       spec = wektor_iloczyn_skalarny(&livec, &tmp);
       
       if (spec > 0)
+      {
         wektor_iloczyn_float(&scolor, &s->kolor, powf(spec, rzecz->pow->roughness));
-      else
-        wektor_ustaw(&scolor, 0, 0, 0);
-
-      wektor_iloczyn_osobny(&scolor, &scolor, &rzecz->pow->specular);
-
-      wektor_suma(&ret, &ret, &lcolor);
-      wektor_suma(&ret, &ret, &scolor);
+        wektor_iloczyn_osobny(&scolor, &scolor, &rzecz->pow->specular);
+        wektor_suma(&ret, &ret, &scolor);
+      }
     }
   }
 
@@ -88,7 +85,6 @@ static kolor kolor_odbicia(scena* scena, obiekt* rzecz, wektor* pozycja, wektor*
   p.kierunek = kierunekOdbicia;
 
   k = sledz(scena, &p, numer_odbicia + 1);
-  //;rzecz->pow->reflect
   wektor_iloczyn_float(&k, &k, rzecz->pow->reflect);
   return k;
 }
@@ -108,18 +104,19 @@ static kolor cieniuj(scena* scena, przeciecie *przeciecie, int numer_odbicia)
   wektor_iloczyn_wektorowy(&odbicie, &odbicie, &normalna);
   wektor_roznica(&odbicie, d, &odbicie);
 
-  // standardowe oswietlenie
   wektor_ustaw(&ret, 0, 0, 0);
+
+  // standardowe oswietlenie
   pomocniczy = podstawowy_kolor(scena, przeciecie->rzecz, &pozycja, &normalna, &odbicie);
   wektor_suma(&ret, &ret, &pomocniczy);
-
+/*
   // odbicia
-  if (numer_odbicia >= 5)
-    wektor_ustaw(&pomocniczy, .5, .5, .5);
-  else
+  if (numer_odbicia < 5)
+  {
     pomocniczy = kolor_odbicia(scena, przeciecie->rzecz, &pozycja, &normalna, &odbicie, numer_odbicia);
-  wektor_suma(&ret, &ret, &pomocniczy);
-
+    wektor_suma(&ret, &ret, &pomocniczy);
+  }
+*/
   return ret;
 }
 

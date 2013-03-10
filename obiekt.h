@@ -20,6 +20,7 @@ typedef struct
 {
   kolor diffuse;
   kolor specular;
+  kolor ambient;
   float reflect;
   float roughness;
 } powierzchnia;
