@@ -78,6 +78,8 @@ int main(int argc, char** argv)
   {
     unsigned i;
     FILE* file = fopen("obrazek.txt","w");
+    if (file == NULL)
+      goto fin;
     for (i = 0 ; i < WIDTH * HEIGHT ; i++)
     {
       fprintf(file, "%d %d %d ", (uint8_t)bufor[i].x, (uint8_t)bufor[i].y, (uint8_t)bufor[i].z);
