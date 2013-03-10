@@ -106,9 +106,7 @@ static kolor cieniuj(scena* scena, przeciecie *przeciecie, int numer_odbicia)
   wektor_suma(&pozycja, &pozycja, przeciecie->wiazka.poczatek);
   przeciecie->rzecz->normalna(przeciecie->rzecz, &normalna, &pozycja);
 
-  wektor_iloczyn_wektorowy(&odbicie, &normalna, d);
-  wektor_iloczyn_float(&odbicie, &odbicie, 2.0f);
-  wektor_iloczyn_wektorowy(&odbicie, &odbicie, &normalna);
+  wektor_iloczyn_float(&odbicie, &normalna, 2.0f * wektor_iloczyn_skalarny(d, &normalna));
   wektor_roznica(&odbicie, d, &odbicie);
 
   wektor_ustaw(&ret, 0, 0, 0);
