@@ -3,6 +3,6 @@
 
 #include "scena.h"
 
-kolor sledz(scena* scena, promien* promien, int numer_odbicia);
-void generuj(scena* scena, int w, int h, kolor* bufor);
+kolor sledz(scena* scena, promien* promien, int numer_odbicia, int numer_zalamania, float n);
+void generuj(scena* scena, int w, int h, kolor* bufor, int AA);
 #endif
