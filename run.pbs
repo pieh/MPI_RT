@@ -2,4 +2,4 @@
 #PBS -j oe
 #PBS -o rt.log
 
-mpiexec ~/rt_test/program
+mpiexec ~/MPI_RT/program
