@@ -128,20 +128,26 @@ kolor sledz(scena* scena, promien* promien, int numer_odbicia)
   }
 }
 
-void generuj(scena* scena, int w, int h, kolor* bufor)
+void generuj(scena* scena, int w, int h, kolor* bufor, unsigned AA)
 {
   int x, y, i;
   float cx, cy;
-  int s = w * h;
+  const unsigned WIDTH_AA = w * AA;
+  const unsigned HEIGHT_AA = h * AA;
+  int s = WIDTH_AA * HEIGHT_AA;
+  kolor* aktbufor = bufor;
+  if (AA != 1)
+    aktbufor = (kolor*)malloc(WIDTH_AA * HEIGHT_AA * sizeof(*bufor));
+
   for (i = 0 ; i < s ; i++)
   {
     wektor kierunek, tmp;
     promien p;
-    x = i % w;
-    y = i / w;
+    x = i % WIDTH_AA;
+    y = i / HEIGHT_AA;
 
-    cx = (x - (w / 2.0f)) / (2.0f * w);
-    cy = -(y - (h / 2.0f)) / (2.0f * h);
+    cx = (x - (WIDTH_AA / 2.0f)) / (2.0f * WIDTH_AA);
+    cy = -(y - (HEIGHT_AA / 2.0f)) / (2.0f * HEIGHT_AA);
 
     wektor_iloczyn_float(&kierunek, &scena->kam.wprawo, cx);
     wektor_iloczyn_float(&tmp,      &scena->kam.dogory, cy);
@@ -152,10 +158,32 @@ void generuj(scena* scena, int w, int h, kolor* bufor)
     p.poczatek = &scena->kam.pozycja;
     p.kierunek = &kierunek;
 
-    bufor[i] = sledz(scena, &p, 0);
+    aktbufor[i] = sledz(scena, &p, 0);
     
-    bufor[i].x = bufor[i].x > 1 ? 255.0f : (int)(255.0f * bufor[i].x);
-    bufor[i].y = bufor[i].y > 1 ? 255.0f : (int)(255.0f * bufor[i].y);
-    bufor[i].z = bufor[i].z > 1 ? 255.0f : (int)(255.0f * bufor[i].z);
+    aktbufor[i].x = aktbufor[i].x > 1 ? 255.0f : (int)(255.0f * aktbufor[i].x);
+    aktbufor[i].y = aktbufor[i].y > 1 ? 255.0f : (int)(255.0f * aktbufor[i].y);
+    aktbufor[i].z = aktbufor[i].z > 1 ? 255.0f : (int)(255.0f * aktbufor[i].z);
+  }
+
+  if (AA != 1)
+  {
+    unsigned x, y, aax, aay;
+    for (x = 0 ; x < w ; x++)
+    {
+      for (y = 0 ; y < h ; y++)
+      {
+        kolor *r = bufor + h * y + x;
+        wektor_ustaw(r, 0, 0, 0);
+        for (aax = 0 ; aax < AA ; aax++)
+        {
+          for (aay = 0 ; aay < AA ; aay++)
+          {
+            wektor_suma(r, r, aktbufor + (x * AA + aax) + WIDTH_AA * (y * AA + aay));
+          }
+        }
+        wektor_iloczyn_float(r, r, 1.0f / (AA * AA));
+      }
+    }
+   free(aktbufor);
   }
 }

@@ -64,7 +64,7 @@ int main(int argc, char** argv)
   wektor_ustaw(&moja_scena.tablica_swiatel[3].pozycja, 0, 3.5, 0);
   wektor_ustaw(&moja_scena.tablica_swiatel[3].kolor, .21f, .21f, .35f);
 
-  generuj(&moja_scena, WIDTH, HEIGHT, bufor);
+  generuj(&moja_scena, WIDTH, HEIGHT, bufor, 1);
   printf("Wygenerowano\n");
 
 #ifndef _WIN32
