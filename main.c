@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <mpi.h>
+#include <time.h>
 
 #include "obiekt.h"
 #include "kula.h"
@@ -65,7 +66,14 @@ int main(int argc, char** argv)
   printf("Wygenerowano\n");
 
 #ifndef _WIN32
-  zapisz_png_do_pliku("obr.png", bufor, WIDTH, HEIGHT);
+  char file_name[100];
+  time_t t = time(NULL);
+  struct tm now = *localtime(&t);
+
+  sprintf(file_name, "RT_out/out %02d-%02d-%02d %02d-%02d-%02d.png",
+          now.tm_year + 1900, now.tm_mon + 1, now.tm_mday,
+          now.tm_hour, now.tm_min, now.tm_sec); 
+  zapisz_png_do_pliku(file_name, bufor, WIDTH, HEIGHT);
 #else
   {
     unsigned i;
