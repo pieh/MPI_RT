@@ -27,6 +27,8 @@ int main(int argc, char** argv)
   kolor diff = {1,1,1};
   kolor spec = {.5, .5, .5};
   scena moja_scena;
+  clock_t czasomierz;
+  float czas;
 
   MPI_Init(&argc, &argv); 
   MPI_Comm_rank(MPI_COMM_WORLD, &myrank); 
@@ -64,8 +66,11 @@ int main(int argc, char** argv)
   wektor_ustaw(&moja_scena.tablica_swiatel[3].pozycja, 0, 3.5, 0);
   wektor_ustaw(&moja_scena.tablica_swiatel[3].kolor, .21f, .21f, .35f);
 
+
+  czasomierz = clock();
   generuj(&moja_scena, WIDTH, HEIGHT, bufor, 1);
-  printf("Wygenerowano\n");
+  czas = (float)(clock() - czasomierz) / CLOCKS_PER_SEC;
+  printf("Wygenerowano w czasie %f\n", czas);
 
 #ifndef _WIN32
   char file_name[100];
