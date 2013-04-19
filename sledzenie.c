@@ -201,11 +201,11 @@ kolor* generuj(scena* scena, int w, int h, unsigned AA)
     MPI_Comm_size(MPI_COMM_WORLD, &workers);
 
   ile_max_zadan= (s + workers -1) / workers;
-  printf("Nodow: %d, Max-zadan: %d", workers, ile_max_zadan);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
   if (rank == 0)
   {
+    printf("Nodow: %d, Max-zadan: %d", workers, ile_max_zadan);
     listyzadan = (ZadanieWyznaczKolorPixela**)malloc(workers * sizeof(ZadanieWyznaczKolorPixela*));
     pozycje = (int*)malloc(workers * sizeof(int));
     for (i = 0 ; i < workers ; i++)
@@ -285,7 +285,12 @@ kolor* generuj(scena* scena, int w, int h, unsigned AA)
     {
       dlugosc = ile_max_zadan;
       if ((rank+1) * ile_max_zadan > s)
-        dlugosc--;
+      {
+        dlugosc = s - (rank+1) * ile_max_zadan;
+        if (dlugosc < 0)
+          dlugosc = 0;
+      }
+        
     }
     /*else if (g_TrybRownloglosci == PODZIAL_PIXELI_DIRICHLET)
     {
