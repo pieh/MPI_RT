@@ -3,9 +3,9 @@
 
 #include "scena.h"
 
-enum TrybRownoglosci { BRAK, PODZIAL_PIXELI, PODZIAL_PIXELI_DIRICHLET };
+typedef enum { BRAK, PODZIAL_PIXELI, PODZIAL_PIXELI_DIRICHLET } TrybRownoglosci;
 
-enum TrybRownoglosci g_TrybRownloglosci;
+TrybRownoglosci g_TrybRownloglosci;
 
 kolor sledz(scena* scena, promien* promien, int numer_odbicia, int numer_zalamania, float n);
 kolor* generuj(scena* scena, int w, int h, unsigned AA);
