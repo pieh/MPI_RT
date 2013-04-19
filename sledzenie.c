@@ -205,7 +205,7 @@ kolor* generuj(scena* scena, int w, int h, unsigned AA)
 
   if (rank == 0)
   {
-    printf("Nodow: %d, Max-zadan: %d", workers, ile_max_zadan);
+    printf("Nodow: %d, Max-zadan: %d\n", workers, ile_max_zadan);
     listyzadan = (ZadanieWyznaczKolorPixela**)malloc(workers * sizeof(ZadanieWyznaczKolorPixela*));
     pozycje = (int*)malloc(workers * sizeof(int));
     for (i = 0 ; i < workers ; i++)
