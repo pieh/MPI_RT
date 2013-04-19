@@ -194,12 +194,13 @@ kolor* generuj(scena* scena, int w, int h, unsigned AA)
   int rank;
   ZadanieWyznaczKolorPixela** listyzadan;
   int* pozycje;
-  int ile_max_zadan= (s + workers -1) / workers;
+  int ile_max_zadan;
   //int* dlugoscilist
 
   if (g_TrybRownloglosci == PODZIAL_PIXELI || g_TrybRownloglosci == PODZIAL_PIXELI_DIRICHLET)
     MPI_Comm_size(MPI_COMM_WORLD, &workers);
 
+  ile_max_zadan= (s + workers -1) / workers;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
   if (rank == 0)
