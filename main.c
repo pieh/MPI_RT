@@ -30,12 +30,13 @@ int main(int argc, char** argv)
 {
   int myrank;
   int comm_size;
-  const unsigned WIDTH = 600;
-  const unsigned HEIGHT = 600;
+  const unsigned WIDTH = 300;
+  const unsigned HEIGHT = 300;
   danepowierzchnii danepow, danepow2, daneszachownica;
   powierzchnia pow, pow2, szachownica;
 
   kolor* bufor;
+  //bufor = (kolor*)malloc(WIDTH * HEIGHT * sizeof(*bufor));
   wektor srodek1 = {0, 1, 0, 0};
   wektor srodek2 = {-1, .5, 1, 0};
   wektor plas_norm = {0, 1, 0, 0};
@@ -47,14 +48,9 @@ int main(int argc, char** argv)
   clock_t czasomierz;
   float czas;
 
-  MPI_Init(&argc, &argv); 
-  MPI_Comm_rank(MPI_COMM_WORLD, &myrank); 
-  MPI_Comm_size(MPI_COMM_WORLD, &comm_size);
-  if (myrank != 0)
-    goto fin;
+  sledzenie_init(&argc, &argv);
 
   kamera_stworz(&moja_scena.kam, &poz, &na);
-  bufor = (kolor*)malloc(WIDTH * HEIGHT * sizeof(*bufor));
 
   danepow.diffuse = diff;
   danepow.specular = spec;
@@ -103,35 +99,39 @@ int main(int argc, char** argv)
   wektor_ustaw(&moja_scena.tablica_swiatel[3].pozycja, 0, 3.5, 0);
   wektor_ustaw(&moja_scena.tablica_swiatel[3].kolor, .21f, .21f, .35f);
 
+  g_TrybRownloglosci = PODZIAL_PIXELI;
 
   czasomierz = clock();
-  generuj(&moja_scena, WIDTH, HEIGHT, bufor, 1);
+  bufor = generuj(&moja_scena, WIDTH, HEIGHT, 1);
   czas = (float)(clock() - czasomierz) / CLOCKS_PER_SEC;
   printf("Wygenerowano w czasie %f\n", czas);
 
-#ifndef _WIN32
-  char file_name[100];
-  time_t t = time(NULL);
-  struct tm now = *localtime(&t);
-
-  sprintf(file_name, "RT_out/out %02d-%02d-%02d %02d-%02d-%02d.png",
-          now.tm_year + 1900, now.tm_mon + 1, now.tm_mday,
-          now.tm_hour, now.tm_min, now.tm_sec); 
-  zapisz_png_do_pliku(file_name, bufor, WIDTH, HEIGHT);
-#else
+  if (bufor != NULL)
   {
-    unsigned i;
-    FILE* file = fopen("obrazek.txt","w");
-    if (file == NULL)
-      goto fin;
-    for (i = 0 ; i < WIDTH * HEIGHT ; i++)
+#ifndef _WIN32
+    char file_name[100];
+    time_t t = time(NULL);
+    struct tm now = *localtime(&t);
+
+    sprintf(file_name, "RT_out/out %02d-%02d-%02d %02d-%02d-%02d.png",
+            now.tm_year + 1900, now.tm_mon + 1, now.tm_mday,
+            now.tm_hour, now.tm_min, now.tm_sec); 
+    zapisz_png_do_pliku(file_name, bufor, WIDTH, HEIGHT);
+#else
     {
-      fprintf(file, "%d %d %d ", (uint8_t)bufor[i].x, (uint8_t)bufor[i].y, (uint8_t)bufor[i].z);
-      if (i % WIDTH == WIDTH - 1)
-        fprintf(file, "\n");
+      unsigned i;
+      FILE* file = fopen("obrazek.txt","w");
+      if (file == NULL)
+        goto fin;
+      for (i = 0 ; i < WIDTH * HEIGHT ; i++)
+      {
+        fprintf(file, "%d %d %d ", (uint8_t)bufor[i].x, (uint8_t)bufor[i].y, (uint8_t)bufor[i].z);
+        if (i % WIDTH == WIDTH - 1)
+          fprintf(file, "\n");
+      }
     }
-  }
 #endif
+  }
 
 fin:
   MPI_Finalize(); 
