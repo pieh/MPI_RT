@@ -298,39 +298,41 @@ kolor* generuj(scena* scena, int w, int h, unsigned AA)
     {
       adresat = s % ile_max_zadan;
     }*/
+
+#ifdef VERBOSE_PRINT
+    printf("Odbieranie zadan dla adresata %d, dlugosc: %d\n", rank, dlugosc);
+#endif
+
     if (dlugosc > 0)
     {
       listazadan = (ZadanieWyznaczKolorPixela*)malloc(dlugosc * sizeof(ZadanieWyznaczKolorPixela));
       // czytamy instrukcje
       MPI_Recv(listazadan, dlugosc, MPI_ZADANIE_WYZNACZ_KOLOR_PIXELA, 0, 0, MPI_COMM_WORLD, &status);
+
+      for (i = 0 ; i < dlugosc ; i++)
+      {
+        promien p;
+        kolor ret;
+        p.poczatek = &scena->kam.pozycja;
+        p.kierunek = (wektor*)malloc(sizeof(wektor));
+        p.kierunek->x = listazadan[i].x;
+        p.kierunek->y = listazadan[i].y;
+        p.kierunek->z = listazadan[i].z;
+  #ifdef VERBOSE_PRINT
+        printf(" zadanie %d [%d]: %f, %f, %f\n", listazadan[i].i, rank, listazadan[i].x, listazadan[i].y, listazadan[i].z);
+  #endif
+        ret = sledz(scena, &p, 0, 0, 1.0f);
+
+        listazadan[i].x = ret.x > 1 ? 255.0f : (int)(255.0f * ret.x);
+        listazadan[i].y = ret.y > 1 ? 255.0f : (int)(255.0f * ret.y);
+        listazadan[i].z = ret.z > 1 ? 255.0f : (int)(255.0f * ret.z);
+  #ifdef VERBOSE_PRINT
+        printf(" wynik %d [%d]: %f, %f, %f\n", listazadan[i].i, rank, listazadan[i].x, listazadan[i].y, listazadan[i].z);
+  #endif
+      }
+
+      MPI_Isend(listazadan, dlugosc, MPI_ZADANIE_WYZNACZ_KOLOR_PIXELA, 0, 1, MPI_COMM_WORLD, &send_request);
     }
-#ifdef VERBOSE_PRINT
-    printf("Odbieranie zadan dla adresata %d, dlugosc: %d\n", rank, dlugosc);
-#endif
-
-    for (i = 0 ; i < dlugosc ; i++)
-    {
-      promien p;
-      kolor ret;
-      p.poczatek = &scena->kam.pozycja;
-      p.kierunek = (wektor*)malloc(sizeof(wektor));
-      p.kierunek->x = listazadan[i].x;
-      p.kierunek->y = listazadan[i].y;
-      p.kierunek->z = listazadan[i].z;
-#ifdef VERBOSE_PRINT
-      printf(" zadanie %d [%d]: %f, %f, %f\n", listazadan[i].i, rank, listazadan[i].x, listazadan[i].y, listazadan[i].z);
-#endif
-      ret = sledz(scena, &p, 0, 0, 1.0f);
-
-      listazadan[i].x = ret.x > 1 ? 255.0f : (int)(255.0f * ret.x);
-      listazadan[i].y = ret.y > 1 ? 255.0f : (int)(255.0f * ret.y);
-      listazadan[i].z = ret.z > 1 ? 255.0f : (int)(255.0f * ret.z);
-#ifdef VERBOSE_PRINT
-      printf(" wynik %d [%d]: %f, %f, %f\n", listazadan[i].i, rank, listazadan[i].x, listazadan[i].y, listazadan[i].z);
-#endif
-    }
-
-    MPI_Isend(listazadan, dlugosc, MPI_ZADANIE_WYZNACZ_KOLOR_PIXELA, 0, 1, MPI_COMM_WORLD, &send_request);
   }
 
   if (rank == 0)
@@ -346,17 +348,25 @@ kolor* generuj(scena* scena, int w, int h, unsigned AA)
       {
         dlugosc = ile_max_zadan;
         if ((rank+1) * ile_max_zadan > s)
-          dlugosc--;
+        {
+          dlugosc = s - (rank+1) * ile_max_zadan;
+          if (dlugosc < 0)
+            dlugosc = 0;
+        }
       }
-      listazadan = (ZadanieWyznaczKolorPixela*)malloc(dlugosc * sizeof(ZadanieWyznaczKolorPixela));
-      MPI_Recv(listazadan, dlugosc, MPI_ZADANIE_WYZNACZ_KOLOR_PIXELA, i, 1, MPI_COMM_WORLD, &status);
 
-      for (x = 0 ; x < dlugosc ; x++)
+      if (dlugosc > 0)
       {
-        ZadanieWyznaczKolorPixela* z = listazadan + x;
-        aktbufor[z->i].x = z->x;
-        aktbufor[z->i].y = z->y;
-        aktbufor[z->i].z = z->z;
+        listazadan = (ZadanieWyznaczKolorPixela*)malloc(dlugosc * sizeof(ZadanieWyznaczKolorPixela));
+        MPI_Recv(listazadan, dlugosc, MPI_ZADANIE_WYZNACZ_KOLOR_PIXELA, i, 1, MPI_COMM_WORLD, &status);
+
+        for (x = 0 ; x < dlugosc ; x++)
+        {
+          ZadanieWyznaczKolorPixela* z = listazadan + x;
+          aktbufor[z->i].x = z->x;
+          aktbufor[z->i].y = z->y;
+          aktbufor[z->i].z = z->z;
+        }
       }
     }
 
