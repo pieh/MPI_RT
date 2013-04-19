@@ -180,7 +180,9 @@ typedef struct
 
 static MPI_Datatype MPI_ZADANIE_WYZNACZ_KOLOR_PIXELA;
 
-#define VERBOSE_PRINT
+//#define VERBOSE_PRINT
+
+#define VERBOSE_PRINT2
 
 kolor* generuj(scena* scena, int w, int h, unsigned AA)
 {
@@ -205,7 +207,9 @@ kolor* generuj(scena* scena, int w, int h, unsigned AA)
 
   if (rank == 0)
   {
+#ifdef VERBOSE_PRINT
     printf("Nodow: %d, Max-zadan: %d\n", workers, ile_max_zadan);
+#endif
     listyzadan = (ZadanieWyznaczKolorPixela**)malloc(workers * sizeof(ZadanieWyznaczKolorPixela*));
     pozycje = (int*)malloc(workers * sizeof(int));
     for (i = 0 ; i < workers ; i++)
@@ -272,6 +276,9 @@ kolor* generuj(scena* scena, int w, int h, unsigned AA)
       MPI_Request send_request;//, recv_request;
       if (pozycje[i] > 0)
       {
+#ifdef VERBOSE_PRINT2
+        printf("Isend %d -> %d, Tag %d\n", rank, i, 0);
+#endif
         int ret = MPI_Isend(listyzadan[i], pozycje[i], MPI_ZADANIE_WYZNACZ_KOLOR_PIXELA, i, 0, MPI_COMM_WORLD, &send_request);
       }
     }
@@ -307,6 +314,9 @@ kolor* generuj(scena* scena, int w, int h, unsigned AA)
     {
       listazadan = (ZadanieWyznaczKolorPixela*)malloc(dlugosc * sizeof(ZadanieWyznaczKolorPixela));
       // czytamy instrukcje
+#ifdef VERBOSE_PRINT2
+        printf("Rec %d <- %d, Tag %d\n", rank, 0, 0);
+#endif
       MPI_Recv(listazadan, dlugosc, MPI_ZADANIE_WYZNACZ_KOLOR_PIXELA, 0, 0, MPI_COMM_WORLD, &status);
 
       for (i = 0 ; i < dlugosc ; i++)
@@ -330,7 +340,9 @@ kolor* generuj(scena* scena, int w, int h, unsigned AA)
         printf(" wynik %d [%d]: %f, %f, %f\n", listazadan[i].i, rank, listazadan[i].x, listazadan[i].y, listazadan[i].z);
   #endif
       }
-
+#ifdef VERBOSE_PRINT2
+        printf("Isend %d -> %d, Tag %d\n", rank, 0, 1);
+#endif
       MPI_Isend(listazadan, dlugosc, MPI_ZADANIE_WYZNACZ_KOLOR_PIXELA, 0, 1, MPI_COMM_WORLD, &send_request);
     }
   }
@@ -358,6 +370,10 @@ kolor* generuj(scena* scena, int w, int h, unsigned AA)
       if (dlugosc > 0)
       {
         listazadan = (ZadanieWyznaczKolorPixela*)malloc(dlugosc * sizeof(ZadanieWyznaczKolorPixela));
+#ifdef VERBOSE_PRINT2
+        printf("Rec %d <- %d, Tag %d\n", rank, i, 1);
+#endif
+
         MPI_Recv(listazadan, dlugosc, MPI_ZADANIE_WYZNACZ_KOLOR_PIXELA, i, 1, MPI_COMM_WORLD, &status);
 
         for (x = 0 ; x < dlugosc ; x++)
