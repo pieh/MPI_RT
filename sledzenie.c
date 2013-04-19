@@ -5,8 +5,6 @@
 #include <mpi.h>
 #include <stdio.h>
 
-g_TrybRownloglosci = BRAK;
-
 static int przetnij(scena* scena, promien* promien, przeciecie** przeciecia)
 {
   przeciecie *najblizsze = NULL;
@@ -182,7 +180,7 @@ typedef struct
 
 static MPI_Datatype MPI_ZADANIE_WYZNACZ_KOLOR_PIXELA;
 
-//#define VERBOSE_PRINT
+#define VERBOSE_PRINT
 
 kolor* generuj(scena* scena, int w, int h, unsigned AA)
 {

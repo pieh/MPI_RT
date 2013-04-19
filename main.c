@@ -30,8 +30,8 @@ int main(int argc, char** argv)
 {
   int myrank;
   int comm_size;
-  const unsigned WIDTH = 300;
-  const unsigned HEIGHT = 300;
+  const unsigned WIDTH = 3;
+  const unsigned HEIGHT = 3;
   danepowierzchnii danepow, danepow2, daneszachownica;
   powierzchnia pow, pow2, szachownica;
 
