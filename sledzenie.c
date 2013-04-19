@@ -201,6 +201,7 @@ kolor* generuj(scena* scena, int w, int h, unsigned AA)
     MPI_Comm_size(MPI_COMM_WORLD, &workers);
 
   ile_max_zadan= (s + workers -1) / workers;
+  printf("Nodow: %d, Max-zadan: %d", workers, ile_max_zadan);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
   if (rank == 0)
@@ -264,14 +265,14 @@ kolor* generuj(scena* scena, int w, int h, unsigned AA)
       aktbufor[i].z = aktbufor[i].z > 1 ? 255.0f : (int)(255.0f * aktbufor[i].z);
       */
     }
-  }
 
-  for (i = 0 ; i < workers ; i++)
-  {
-    //MPI_Status  status;
-    MPI_Request send_request;//, recv_request;
+    for (i = 0 ; i < workers ; i++)
+    {
+      //MPI_Status  status;
+      MPI_Request send_request;//, recv_request;
 
-    int ret = MPI_Isend(listyzadan[i], pozycje[i], MPI_ZADANIE_WYZNACZ_KOLOR_PIXELA, i, 0, MPI_COMM_WORLD, &send_request);
+      int ret = MPI_Isend(listyzadan[i], pozycje[i], MPI_ZADANIE_WYZNACZ_KOLOR_PIXELA, i, 0, MPI_COMM_WORLD, &send_request);
+    }
   }
 
   {
