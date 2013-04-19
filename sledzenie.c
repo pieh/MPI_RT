@@ -270,8 +270,10 @@ kolor* generuj(scena* scena, int w, int h, unsigned AA)
     {
       //MPI_Status  status;
       MPI_Request send_request;//, recv_request;
-
-      int ret = MPI_Isend(listyzadan[i], pozycje[i], MPI_ZADANIE_WYZNACZ_KOLOR_PIXELA, i, 0, MPI_COMM_WORLD, &send_request);
+      if (pozycje[i] > 0)
+      {
+        int ret = MPI_Isend(listyzadan[i], pozycje[i], MPI_ZADANIE_WYZNACZ_KOLOR_PIXELA, i, 0, MPI_COMM_WORLD, &send_request);
+      }
     }
   }
 
@@ -296,11 +298,12 @@ kolor* generuj(scena* scena, int w, int h, unsigned AA)
     {
       adresat = s % ile_max_zadan;
     }*/
-
-    listazadan = (ZadanieWyznaczKolorPixela*)malloc(dlugosc * sizeof(ZadanieWyznaczKolorPixela));
-    // czytamy instrukcje
-    MPI_Recv(listazadan, dlugosc, MPI_ZADANIE_WYZNACZ_KOLOR_PIXELA, 0, 0, MPI_COMM_WORLD, &status);
-
+    if (dlugosc > 0)
+    {
+      listazadan = (ZadanieWyznaczKolorPixela*)malloc(dlugosc * sizeof(ZadanieWyznaczKolorPixela));
+      // czytamy instrukcje
+      MPI_Recv(listazadan, dlugosc, MPI_ZADANIE_WYZNACZ_KOLOR_PIXELA, 0, 0, MPI_COMM_WORLD, &status);
+    }
 #ifdef VERBOSE_PRINT
     printf("Odbieranie zadan dla adresata %d, dlugosc: %d\n", rank, dlugosc);
 #endif
