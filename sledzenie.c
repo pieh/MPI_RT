@@ -393,6 +393,7 @@ kolor* generuj(scena* scena, int w, int h, unsigned AA)
         }
       }
       free(aktbufor);
+      printf("KONIEC!!!!\n");
       return bufor;
     }
     else
